@@ -1,16 +1,14 @@
 import socket
-import sys
-import os
 
-host = ""  # Your local IP
-port = 10000  # If you want to get remote access you must put an open port
+HOST = ""  # Your local IP
+PORT = 10000  # Your open port
 client = socket.socket()
 
 
 def socket_bind():
     try:
         print("Creating server...")
-        client.bind((host, port))
+        client.bind((HOST, PORT))
         client.listen()
         print("Server created.")
     except socket.error as e:
@@ -27,18 +25,16 @@ def socket_accept():
 
 
 def send_commands(conn):
-    print(conn.recv(1024).decode("utf-8", errors="ignore"), end="")
     while True:
-        cmd = input(">")
-        if cmd == "quit":
+        command = input(">")
+        if command == "quit":
             conn.close()
             client.close()
-            sys.exit()
-        if cmd == "cls":
-            os.system("cls")
-        if len(cmd) > 0:
-            conn.send(cmd.encode())
-            print(conn.recv(1024).decode("utf-8", errors="ignore"), end="")
+            exit()
+        if len(command) > 0:
+            conn.send(command.encode())
+            output = conn.recv(131072).decode("utf-8", "ignore")
+            print(output, end="")
 
 
 if __name__ == '__main__':
